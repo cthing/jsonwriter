@@ -1,6 +1,6 @@
 # ![C Thing Software](https://www.cthing.com/branding/CThingSoftware-57x60.png "C Thing Software") jsonwriter
 
-This library writes JSON with or without pretty printing. The library has no runbtime dependencies on any JSON processing
+This library writes JSON with or without pretty printing. The library has no runtime dependencies on any JSON processing
 package.
 
 ## Usage
