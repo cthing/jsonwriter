@@ -150,6 +150,8 @@ public class JsonWriter {
         VALUE,
     }
 
+    private static final String NEWLINE = System.lineSeparator();
+
     private final Writer out;
     private boolean prettyPrint;
     private int indent;
@@ -729,7 +731,7 @@ public class JsonWriter {
      */
     private void writeNewline() throws IOException {
         if (this.prettyPrint) {
-            this.out.write('\n');
+            this.out.write(NEWLINE);
             if (!this.containerStack.isEmpty()) {
                 this.out.write(this.indentStr.repeat(this.containerStack.size()));
             }
