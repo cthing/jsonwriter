@@ -140,7 +140,7 @@ public class JsonWriter {
     }
 
     private enum ItemType {
-        NOTHING,
+        NONE,
         OBJECT_START,
         OBJECT_END,
         ARRAY_START,
@@ -159,7 +159,7 @@ public class JsonWriter {
 
     private String indentStr;
     private final Deque<ContainerType> containerStack;
-    private ItemType lastWritten;
+    private ItemType lastItem;
 
     /**
      * Constructs a JSON writer that writes to the standard output (i.e. {@link System#out}).
@@ -178,7 +178,7 @@ public class JsonWriter {
         this.indent = 4;
         this.indentStr = " ".repeat(this.indent);
         this.containerStack = new LinkedList<>();
-        this.lastWritten = ItemType.NOTHING;
+        this.lastItem = ItemType.NONE;
     }
 
     /**
@@ -529,8 +529,8 @@ public class JsonWriter {
      * @throws IOException if there is a problem writing the output.
      */
     private void formatter(final ItemType nextItem) throws IOException {
-        switch (this.lastWritten) {
-            case NOTHING, MEMBER_NAME -> {
+        switch (this.lastItem) {
+            case NONE, MEMBER_NAME -> {
                 switch (nextItem) {
                     case OBJECT_START, ARRAY_START, VALUE -> {
                     }
@@ -569,10 +569,10 @@ public class JsonWriter {
                     default -> throw new IllegalStateException("Unexpected value: " + nextItem);
                 }
             }
-            default -> throw new IllegalStateException("Unexpected value: " + this.lastWritten);
+            default -> throw new IllegalStateException("Unexpected value: " + this.lastItem);
         }
 
-        this.lastWritten = nextItem;
+        this.lastItem = nextItem;
     }
 
     /**
