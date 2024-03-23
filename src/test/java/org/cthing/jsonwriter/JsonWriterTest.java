@@ -75,7 +75,8 @@ public class JsonWriterTest {
                 arguments("Hello \"World\"", "\"Hello \\\"World\\\"\""),
                 arguments("https://www.cthing.com/foo", "\"https:\\/\\/www.cthing.com\\/foo\""),
                 arguments("This \\ That", "\"This \\\\ That\""),
-                arguments("Hello \u1E80orld", "\"Hello \\u1E80orld\"")
+                arguments("Hello \u1E80orld", "\"Hello \\u1E80orld\""),
+                arguments("Hello \uD834\uDD1E", "\"Hello \\uD834\\uDD1E\"")
         );
     }
 
