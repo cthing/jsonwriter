@@ -139,7 +139,7 @@ public class JsonWriter {
         ARRAY,
     }
 
-    private enum Event {
+    private enum State {
         NONE,
         OBJECT_START,
         OBJECT_END,
@@ -157,7 +157,7 @@ public class JsonWriter {
 
     private String indentStr;
     private final Deque<ContainerType> containerStack;
-    private Event currentEvent;
+    private State currentState;
 
     /**
      * Constructs a JSON writer that writes to the standard output (i.e. {@link System#out}).
@@ -176,7 +176,7 @@ public class JsonWriter {
         this.indent = 4;
         this.indentStr = " ".repeat(this.indent);
         this.containerStack = new LinkedList<>();
-        this.currentEvent = Event.NONE;
+        this.currentState = State.NONE;
     }
 
     /**
@@ -243,7 +243,7 @@ public class JsonWriter {
      * @throws IOException if there was a problem writing the output.
      */
     public JsonWriter startObject() throws IOException {
-        formatter(Event.OBJECT_START);
+        formatter(State.OBJECT_START);
         this.out.write('{');
 
         this.containerStack.push(ContainerType.OBJECT);
@@ -262,7 +262,7 @@ public class JsonWriter {
             throw new IllegalStateException("Expected to end object but was array");
         }
 
-        formatter(Event.OBJECT_END);
+        formatter(State.OBJECT_END);
         this.out.write('}');
         writeLastNewline();
         return this;
@@ -275,7 +275,7 @@ public class JsonWriter {
      * @throws IOException if there was a problem writing the output.
      */
     public JsonWriter startArray() throws IOException {
-        formatter(Event.ARRAY_START);
+        formatter(State.ARRAY_START);
         this.out.write('[');
 
         this.containerStack.push(ContainerType.ARRAY);
@@ -294,7 +294,7 @@ public class JsonWriter {
             throw new IllegalStateException("Expected to end array but was object");
         }
 
-        formatter(Event.ARRAY_END);
+        formatter(State.ARRAY_END);
         this.out.write(']');
         writeLastNewline();
         return this;
@@ -311,7 +311,7 @@ public class JsonWriter {
      */
     public JsonWriter member(final String name, @Nullable final String value) throws IOException {
         if (value != null || this.writeNullMembers) {
-            formatter(Event.MEMBER);
+            formatter(State.MEMBER);
             writeMemberStart(name);
             writeValue(value);
         }
@@ -327,7 +327,7 @@ public class JsonWriter {
      * @throws IOException if there was a problem writing the output.
      */
     public JsonWriter member(final String name, final char value) throws IOException {
-        formatter(Event.MEMBER);
+        formatter(State.MEMBER);
         writeMemberStart(name);
         writeValue(value);
         return this;
@@ -342,7 +342,7 @@ public class JsonWriter {
      * @throws IOException if there was a problem writing the output.
      */
     public JsonWriter member(final String name, final long value) throws IOException {
-        formatter(Event.MEMBER);
+        formatter(State.MEMBER);
         writeMemberStart(name);
         writeValue(value);
         return this;
@@ -357,7 +357,7 @@ public class JsonWriter {
      * @throws IOException if there was a problem writing the output.
      */
     public JsonWriter member(final String name, final int value) throws IOException {
-        formatter(Event.MEMBER);
+        formatter(State.MEMBER);
         writeMemberStart(name);
         writeValue(value);
         return this;
@@ -372,7 +372,7 @@ public class JsonWriter {
      * @throws IOException if there was a problem writing the output.
      */
     public JsonWriter member(final String name, final double value) throws IOException {
-        formatter(Event.MEMBER);
+        formatter(State.MEMBER);
         writeMemberStart(name);
         writeValue(value);
         return this;
@@ -387,7 +387,7 @@ public class JsonWriter {
      * @throws IOException if there was a problem writing the output.
      */
     public JsonWriter member(final String name, final boolean value) throws IOException {
-        formatter(Event.MEMBER);
+        formatter(State.MEMBER);
         writeMemberStart(name);
         writeValue(value);
         return this;
@@ -402,7 +402,7 @@ public class JsonWriter {
      * @throws IOException if there was a problem writing the output.
      */
     public JsonWriter member(final String name) throws IOException {
-        formatter(Event.MEMBER_NAME);
+        formatter(State.MEMBER_NAME);
         writeMemberStart(name);
         return this;
     }
@@ -442,7 +442,7 @@ public class JsonWriter {
      * @throws IOException if there was a problem writing the output.
      */
     public JsonWriter value(@Nullable final String value) throws IOException {
-        formatter(Event.VALUE);
+        formatter(State.VALUE);
         writeValue(value);
         writeLastNewline();
         return this;
@@ -456,7 +456,7 @@ public class JsonWriter {
      * @throws IOException if there was a problem writing the output.
      */
     public JsonWriter value(final char value) throws IOException {
-        formatter(Event.VALUE);
+        formatter(State.VALUE);
         writeValue(value);
         writeLastNewline();
         return this;
@@ -470,7 +470,7 @@ public class JsonWriter {
      * @throws IOException if there was a problem writing the output.
      */
     public JsonWriter value(final long value) throws IOException {
-        formatter(Event.VALUE);
+        formatter(State.VALUE);
         writeValue(value);
         writeLastNewline();
         return this;
@@ -484,7 +484,7 @@ public class JsonWriter {
      * @throws IOException if there was a problem writing the output.
      */
     public JsonWriter value(final int value) throws IOException {
-        formatter(Event.VALUE);
+        formatter(State.VALUE);
         writeValue(value);
         writeLastNewline();
         return this;
@@ -498,7 +498,7 @@ public class JsonWriter {
      * @throws IOException if there was a problem writing the output.
      */
     public JsonWriter value(final double value) throws IOException {
-        formatter(Event.VALUE);
+        formatter(State.VALUE);
         writeValue(value);
         writeLastNewline();
         return this;
@@ -512,7 +512,7 @@ public class JsonWriter {
      * @throws IOException if there was a problem writing the output.
      */
     public JsonWriter value(final boolean value) throws IOException {
-        formatter(Event.VALUE);
+        formatter(State.VALUE);
         writeValue(value);
         writeLastNewline();
         return this;
@@ -523,54 +523,54 @@ public class JsonWriter {
      * written and the next item to write. Based on that, the machine will determine what combination of a
      * comma, newline and indentation need to be written.
      *
-     * @param nextEvent Next writing event
+     * @param nextState Next writing state
      * @throws IOException if there is a problem writing the output.
      */
-    private void formatter(final Event nextEvent) throws IOException {
-        switch (this.currentEvent) {
+    private void formatter(final State nextState) throws IOException {
+        switch (this.currentState) {
             case NONE, MEMBER_NAME -> {
-                switch (nextEvent) {
+                switch (nextState) {
                     case OBJECT_START, ARRAY_START, VALUE -> {
                     }
-                    default -> throw new IllegalStateException("Unexpected value: " + nextEvent);
+                    default -> throw new IllegalStateException("Unexpected value: " + nextState);
                 }
             }
             case OBJECT_START -> {
-                switch (nextEvent) {
+                switch (nextState) {
                     case OBJECT_END, MEMBER, MEMBER_NAME -> writeNewline();
-                    default -> throw new IllegalStateException("Unexpected value: " + nextEvent);
+                    default -> throw new IllegalStateException("Unexpected value: " + nextState);
                 }
             }
             case OBJECT_END, ARRAY_END, VALUE -> {
-                switch (nextEvent) {
+                switch (nextState) {
                     case OBJECT_START, ARRAY_START, MEMBER, MEMBER_NAME, VALUE -> {
                         writeComma();
                         writeNewline();
                     }
                     case OBJECT_END, ARRAY_END -> writeNewline();
-                    default -> throw new IllegalStateException("Unexpected value: " + nextEvent);
+                    default -> throw new IllegalStateException("Unexpected value: " + nextState);
                 }
             }
             case ARRAY_START -> {
-                switch (nextEvent) {
+                switch (nextState) {
                     case OBJECT_START, ARRAY_START, ARRAY_END, VALUE -> writeNewline();
-                    default -> throw new IllegalStateException("Unexpected value: " + nextEvent);
+                    default -> throw new IllegalStateException("Unexpected value: " + nextState);
                 }
             }
             case MEMBER -> {
-                switch (nextEvent) {
+                switch (nextState) {
                     case OBJECT_END -> writeNewline();
                     case MEMBER, MEMBER_NAME -> {
                         writeComma();
                         writeNewline();
                     }
-                    default -> throw new IllegalStateException("Unexpected value: " + nextEvent);
+                    default -> throw new IllegalStateException("Unexpected value: " + nextState);
                 }
             }
-            default -> throw new IllegalStateException("Unexpected value: " + this.currentEvent);
+            default -> throw new IllegalStateException("Unexpected value: " + this.currentState);
         }
 
-        this.currentEvent = nextEvent;
+        this.currentState = nextState;
     }
 
     /**
