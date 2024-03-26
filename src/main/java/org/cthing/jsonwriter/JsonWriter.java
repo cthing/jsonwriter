@@ -408,7 +408,12 @@ public class JsonWriter {
     }
 
     /**
-     * Writes an object member with the specified name and whose value is the start of an object.
+     * Writes an object member with the specified name and whose value is the start of an object. Calling this
+     * method is equivalent to calling:
+     * <pre>
+     * member(name);
+     * startObject();
+     * </pre>
      *
      * @param name Name of the object member
      * @return This writer.
@@ -421,7 +426,12 @@ public class JsonWriter {
     }
 
     /**
-     * Writes an object member with the specified name and whose value is the start of an array.
+     * Writes an object member with the specified name and whose value is the start of an array. Calling this
+     * method is equivalent to calling:
+     * <pre>
+     * member(name);
+     * startArray();
+     * </pre>
      *
      * @param name Name of the object member
      * @return This writer.
