@@ -21,12 +21,15 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.Deque;
+import java.util.EnumSet;
 import java.util.LinkedList;
+import java.util.Set;
 
 import javax.annotation.Nullable;
 import javax.annotation.WillNotClose;
 
 import org.cthing.annotations.AccessForTesting;
+import org.cthing.escapers.JsonEscaper;
 
 
 /**
@@ -154,6 +157,7 @@ public class JsonWriter {
     private boolean prettyPrint;
     private int indent;
     private boolean writeNullMembers;
+    private final Set<JsonEscaper.Option> escapeOptions;
 
     private String indentStr;
     private final Deque<ContainerType> containerStack;
@@ -174,6 +178,7 @@ public class JsonWriter {
     public JsonWriter(@WillNotClose final Writer writer) {
         this.out = writer;
         this.indent = 4;
+        this.escapeOptions = EnumSet.noneOf(JsonEscaper.Option.class);
         this.indentStr = " ".repeat(this.indent);
         this.containerStack = new LinkedList<>();
         this.currentState = State.NONE;
@@ -197,6 +202,30 @@ public class JsonWriter {
      */
     public void setPrettyPrint(final boolean prettyPrint) {
         this.prettyPrint = prettyPrint;
+    }
+
+    /**
+     * Escape characters above the ASCII range (i.e. ch &gt; 0x7F). By default, only ASCII control characters
+     * and markup-significant ASCII characters are escaped. Specifying this option causes all ISO Latin-1,
+     * Unicode BMP and surrogate pair characters to be escaped.
+     *
+     * @param enable {@code true} to escape characters outside the ASCII range using numerical entity references
+     */
+    public void setEscapeNonAscii(final boolean enable) {
+        if (enable) {
+            this.escapeOptions.add(JsonEscaper.Option.ESCAPE_NON_ASCII);
+        } else {
+            this.escapeOptions.remove(JsonEscaper.Option.ESCAPE_NON_ASCII);
+        }
+    }
+
+    /**
+     * Indicates whether characters above the ASCII range (i.e. ch &gt; 0x7F) are escaped.
+     *
+     * @return {@code true} if characters outside the ASCII range are being escaped.
+     */
+    public boolean getEscapeNonAscii() {
+        return this.escapeOptions.contains(JsonEscaper.Option.ESCAPE_NON_ASCII);
     }
 
     /**
@@ -671,44 +700,7 @@ public class JsonWriter {
     @AccessForTesting
     void writeEscapedString(final String str) throws IOException {
         this.out.write('"');
-
-        for (int i = 0; i < str.length(); i++) {
-            final char ch = str.charAt(i);
-            switch (ch) {
-                case '"':
-                    this.out.write("\\\"");
-                    break;
-                case '\\':
-                    this.out.write("\\\\");
-                    break;
-                case '/':
-                    this.out.write("\\/");
-                    break;
-                case '\n':
-                    this.out.write("\\\n");
-                    break;
-                case '\r':
-                    this.out.write("\\\r");
-                    break;
-                case '\f':
-                    this.out.write("\\\f");
-                    break;
-                case '\t':
-                    this.out.write("\\\t");
-                    break;
-                case '\b':
-                    this.out.write("\\\b");
-                    break;
-                default:
-                    if (ch > '\u001F' && ch < '\u007F') {
-                        this.out.write(ch);
-                    } else {
-                        this.out.write(String.format("\\u%04X", (int)ch));
-                    }
-                    break;
-            }
-        }
-
+        JsonEscaper.escape(str, this.out, this.escapeOptions);
         this.out.write('"');
     }
 

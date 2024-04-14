@@ -37,6 +37,7 @@ dependencies {
     api(libs.jsr305)
 
     implementation(libs.cthingAnnots)
+    implementation(libs.escapers)
 
     testImplementation(libs.jacksonCore)
     testImplementation(libs.jacksonDatabind)

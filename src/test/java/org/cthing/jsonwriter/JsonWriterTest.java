@@ -62,16 +62,16 @@ public class JsonWriterTest {
         assertThat(jsonWriter.isWriteNullMembers()).isFalse();
     }
 
-    public static Stream<Arguments> writeEscapedStringSource() {
+    public static Stream<Arguments> escapedNonAsciiProvider() {
         return Stream.of(
                 arguments("", "\"\""),
                 arguments("   ", "\"   \""),
                 arguments("Hello World", "\"Hello World\""),
-                arguments("Hello World\n", "\"Hello World\\\n\""),
-                arguments("Hello World\r\n", "\"Hello World\\\r\\\n\""),
-                arguments("Hello\tWorld", "\"Hello\\\tWorld\""),
-                arguments("Hello World\f", "\"Hello World\\\f\""),
-                arguments("Hello World\b", "\"Hello World\\\b\""),
+                arguments("Hello World\n", "\"Hello World\\n\""),
+                arguments("Hello World\r\n", "\"Hello World\\r\\n\""),
+                arguments("Hello\tWorld", "\"Hello\\tWorld\""),
+                arguments("Hello World\f", "\"Hello World\\f\""),
+                arguments("Hello World\b", "\"Hello World\\b\""),
                 arguments("Hello \"World\"", "\"Hello \\\"World\\\"\""),
                 arguments("https://www.cthing.com/foo", "\"https:\\/\\/www.cthing.com\\/foo\""),
                 arguments("This \\ That", "\"This \\\\ That\""),
@@ -81,10 +81,36 @@ public class JsonWriterTest {
     }
 
     @ParameterizedTest
-    @MethodSource("writeEscapedStringSource")
+    @MethodSource("escapedNonAsciiProvider")
+    public void testWriteEscapedStringNonAscii(final String input, final String output) throws IOException {
+        jsonWriter.setEscapeNonAscii(true);
+        jsonWriter.writeEscapedString(input);
+        assertThat(stringWriter).hasToString(output);
+    }
+
+    public static Stream<Arguments> escapedAsciiProvider() {
+        return Stream.of(
+                arguments("", "\"\""),
+                arguments("   ", "\"   \""),
+                arguments("Hello World", "\"Hello World\""),
+                arguments("Hello World\n", "\"Hello World\\n\""),
+                arguments("Hello World\r\n", "\"Hello World\\r\\n\""),
+                arguments("Hello\tWorld", "\"Hello\\tWorld\""),
+                arguments("Hello World\f", "\"Hello World\\f\""),
+                arguments("Hello World\b", "\"Hello World\\b\""),
+                arguments("Hello \"World\"", "\"Hello \\\"World\\\"\""),
+                arguments("https://www.cthing.com/foo", "\"https:\\/\\/www.cthing.com\\/foo\""),
+                arguments("This \\ That", "\"This \\\\ That\""),
+                arguments("Hello \u1E80orld", "\"Hello \u1E80orld\""),
+                arguments("Hello \uD834\uDD1E", "\"Hello \uD834\uDD1E\"")
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("escapedAsciiProvider")
     public void testWriteEscapedString(final String input, final String output) throws IOException {
         jsonWriter.writeEscapedString(input);
-        assertThat(stringWriter.toString()).isEqualTo(output);
+        assertThat(stringWriter).hasToString(output);
     }
 
     @Nested

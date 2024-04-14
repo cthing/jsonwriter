@@ -1,7 +1,7 @@
 # ![C Thing Software](https://www.cthing.com/branding/CThingSoftware-57x60.png "C Thing Software") jsonwriter
 
-A Java library to write JSON with or without pretty printing. The library has no runtime dependencies on any JSON processing
-package.
+A Java library to write JSON with or without pretty printing. The library has no runtime dependencies on any
+JSON processing package.
 
 ## Usage
 The library is available from [Maven Central](https://repo.maven.apache.org/maven2/org/cthing/jsonwriter/) using the following Maven dependency:
@@ -25,15 +25,15 @@ follows that used in
 ### Writing an Object
 The following are examples of writing a JSON object. Note the use of the fluent API.
 
-Simple object with two ways to create a member:
+Simple object showing two ways to create a member:
 ```java
 final JsonWriter writer = new JsonWriter();
 writer.setPrettyPrint(true);
 writer.startObject()
-      .member("foo", "bar")
+      .member("foo", "bar")    // Key and value in one call
       .member("joe", 12)
-      .member("abc")
-      .value(true)
+      .member("abc")           // Key
+      .value(true)             // Value
       .endObject();
 ```
 JSON written:
@@ -50,11 +50,11 @@ Two ways to create nested objects:
 final JsonWriter writer = new JsonWriter();
 writer.setPrettyPrint(true);
 writer.startObject()
-      .member("abc")
-      .startObject()
+      .member("abc")                // Key for the object
+      .startObject()                // Start object for "abc"
       .member("def", "hello")
       .endObject()
-      .memberStartObject("xyz")
+      .memberStartObject("xyz")     // Start object with key
       .member("hij", 23)
       .endObject()
       .endObject();
