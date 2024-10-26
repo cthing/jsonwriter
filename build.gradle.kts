@@ -28,7 +28,7 @@ plugins {
     alias(libs.plugins.versions)
 }
 
-version = ProjectVersion("1.0.1", BuildType.snapshot)
+version = ProjectVersion("2.0.0", BuildType.snapshot)
 group = "org.cthing"
 description = "A library that writes JSON with or without pretty printing."
 
@@ -39,10 +39,11 @@ java {
 }
 
 dependencies {
-    api(libs.jsr305)
+    api(libs.jspecify)
 
-    implementation(libs.cthingAnnots)
     implementation(libs.escapers)
+
+    compileOnly(libs.cthingAnnots)
 
     testImplementation(libs.jacksonCore)
     testImplementation(libs.jacksonDatabind)

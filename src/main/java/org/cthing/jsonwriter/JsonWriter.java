@@ -14,11 +14,9 @@ import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.Set;
 
-import javax.annotation.Nullable;
-import javax.annotation.WillNotClose;
-
 import org.cthing.annotations.AccessForTesting;
 import org.cthing.escapers.JsonEscaper;
+import org.jspecify.annotations.Nullable;
 
 
 /**
@@ -162,9 +160,9 @@ public class JsonWriter {
     /**
      * Constructs a JSON writer that writes to the specified writer.
      *
-     * @param writer Output writer
+     * @param writer Output writer. Will not be closed.
      */
-    public JsonWriter(@WillNotClose final Writer writer) {
+    public JsonWriter(final Writer writer) {
         this.out = writer;
         this.indent = 4;
         this.escapeOptions = EnumSet.noneOf(JsonEscaper.Option.class);
@@ -277,7 +275,7 @@ public class JsonWriter {
     public JsonWriter endObject() throws IOException {
         final ContainerType containerType = this.containerStack.pop();
         if (containerType != ContainerType.OBJECT) {
-            throw new IllegalStateException("Expected to end object but was array");
+            throw new IllegalStateException("Expected to end object but was an array");
         }
 
         formatter(State.OBJECT_END);
@@ -309,7 +307,7 @@ public class JsonWriter {
     public JsonWriter endArray() throws IOException {
         final ContainerType containerType = this.containerStack.pop();
         if (containerType != ContainerType.ARRAY) {
-            throw new IllegalStateException("Expected to end array but was object");
+            throw new IllegalStateException("Expected to end array but was an object");
         }
 
         formatter(State.ARRAY_END);

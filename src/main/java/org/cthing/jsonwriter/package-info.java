@@ -6,7 +6,7 @@
 /**
  * Classes for writing JSON.
  */
-@PackageNonnullByDefault
+@NullMarked
 package org.cthing.jsonwriter;
 
-import org.cthing.annotations.PackageNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
