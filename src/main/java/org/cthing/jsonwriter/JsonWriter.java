@@ -30,7 +30,9 @@ import org.jspecify.annotations.Nullable;
  * Interchange Format</a>.</p>
  *
  * <h3>Writing an Object</h3>
+ *
  * <p>The following are examples of writing a JSON object. Note the use of the fluent API.</p>
+ *
  * <p>Simple object with two ways to create a member:</p>
  * <pre>
  * final JsonWriter writer = new JsonWriter();
@@ -42,6 +44,7 @@ import org.jspecify.annotations.Nullable;
  *       .value(true)
  *       .endObject();
  * </pre>
+ *
  * <p>JSON written:</p>
  * <pre>
  * {
@@ -50,6 +53,7 @@ import org.jspecify.annotations.Nullable;
  *     "abc": true
  * }
  * </pre>
+ *
  * <p>Two ways to create nested objects:</p>
  * <pre>
  * final JsonWriter writer = new JsonWriter();
@@ -64,6 +68,7 @@ import org.jspecify.annotations.Nullable;
  *       .endObject()
  *       .endObject();
  * </pre>
+ *
  * <p>JSON written:</p>
  * <pre>
  * {
@@ -77,7 +82,9 @@ import org.jspecify.annotations.Nullable;
  * </pre>
  *
  * <h3>Writing an Array</h3>
+ *
  * <p>The following are examples of writing a JSON array.</p>
+ *
  * <p>Simple array:</p>
  * <pre>
  * final JsonWriter writer = new JsonWriter();
@@ -88,6 +95,7 @@ import org.jspecify.annotations.Nullable;
  *       .value(true)
  *       .endArray();
  * </pre>
+ *
  * <p>JSON written:</p>
  * <pre>
  * [
@@ -96,6 +104,7 @@ import org.jspecify.annotations.Nullable;
  *     true
  * ]
  * </pre>
+ *
  * <p>Array with nested array and object:</p>
  * <pre>
  * final JsonWriter writer = new JsonWriter();
@@ -109,6 +118,7 @@ import org.jspecify.annotations.Nullable;
  *       .endArray()
  *       .endArray();
  * </pre>
+ *
  * <p>JSON written:</p>
  * <pre>
  * [
