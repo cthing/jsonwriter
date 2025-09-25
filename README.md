@@ -1,7 +1,7 @@
 # ![C Thing Software](https://www.cthing.com/branding/CThingSoftware-57x60.png "C Thing Software") jsonwriter
 
 [![CI](https://github.com/cthing/jsonwriter/actions/workflows/ci.yml/badge.svg)](https://github.com/cthing/jsonwriter/actions/workflows/ci.yml)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.cthing/jsonwriter/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.cthing/jsonwriter)
+[![Maven Central Version](https://img.shields.io/maven-central/v/org.cthing/jsonwriter)](https://central.sonatype.com/artifact/org.cthing/jsonwriter)
 [![javadoc](https://javadoc.io/badge2/org.cthing/jsonwriter/javadoc.svg)](https://javadoc.io/doc/org.cthing/jsonwriter)
 
 A Java library to write JSON with or without pretty printing. The library has no runtime dependencies on any
