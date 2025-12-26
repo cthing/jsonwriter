@@ -182,6 +182,15 @@ public class JsonWriter {
     }
 
     /**
+     * Flushes the writer.
+     *
+     * @throws IOException if there was problem flushing the output.
+     */
+    public void flush() throws IOException {
+        this.out.flush();
+    }
+
+    /**
      * Indicates whether the writer is configured to format the JSON for readability (i.e. indentation and newlines).
      * The default is {@code false}, which means that the JSON will be written without indentation and newlines.
      *
