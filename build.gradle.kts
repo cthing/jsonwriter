@@ -30,7 +30,7 @@ plugins {
     alias(libs.plugins.versions)
 }
 
-version = ProjectVersion("2.1.0", BuildType.snapshot)
+version = ProjectVersion("2.1.0", BuildType.release)
 group = "org.cthing"
 description = "A library that writes JSON with or without pretty printing."
 
