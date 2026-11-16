@@ -106,7 +106,7 @@ public class JsonWriterTest {
     class NonPrettyPrint {
 
         @Test
-        public void testEmptyObject() throws IOException {
+        public void testEmptyObject1() throws IOException {
             jsonWriter.startObject()
                       .endObject();
             assertThat(stringWriter.toString()).isEqualTo("{}");
@@ -114,9 +114,23 @@ public class JsonWriterTest {
         }
 
         @Test
-        public void testEmptyArray() throws IOException {
+        public void testEmptyObject2() throws IOException {
+            jsonWriter.emptyObject();
+            assertThat(stringWriter.toString()).isEqualTo("{}");
+            validate();
+        }
+
+        @Test
+        public void testEmptyArray1() throws IOException {
             jsonWriter.startArray()
                       .endArray();
+            assertThat(stringWriter.toString()).isEqualTo("[]");
+            validate();
+        }
+
+        @Test
+        public void testEmptyArray2() throws IOException {
+            jsonWriter.emptyArray();
             assertThat(stringWriter.toString()).isEqualTo("[]");
             validate();
         }
@@ -248,7 +262,7 @@ public class JsonWriterTest {
     class PrettyPrint {
 
         @Test
-        public void testEmptyObject() throws IOException {
+        public void testEmptyObject1() throws IOException {
             jsonWriter.setPrettyPrint(true);
             jsonWriter.startObject();
             jsonWriter.endObject();
@@ -260,10 +274,32 @@ public class JsonWriterTest {
         }
 
         @Test
-        public void testEmptyArray() throws IOException {
+        public void testEmptyObject2() throws IOException {
+            jsonWriter.setPrettyPrint(true);
+            jsonWriter.emptyObject();
+            assertThat(stringWriter.toString()).isEqualTo("""
+                                                           {
+                                                           }
+                                                           """);
+            validate();
+        }
+
+        @Test
+        public void testEmptyArray1() throws IOException {
             jsonWriter.setPrettyPrint(true);
             jsonWriter.startArray();
             jsonWriter.endArray();
+            assertThat(stringWriter.toString()).isEqualTo("""
+                                                           [
+                                                           ]
+                                                           """);
+            validate();
+        }
+
+        @Test
+        public void testEmptyArray2() throws IOException {
+            jsonWriter.setPrettyPrint(true);
+            jsonWriter.emptyArray();
             assertThat(stringWriter.toString()).isEqualTo("""
                                                            [
                                                            ]

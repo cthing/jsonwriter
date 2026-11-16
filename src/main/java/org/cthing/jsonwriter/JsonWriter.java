@@ -304,6 +304,21 @@ public class JsonWriter {
     }
 
     /**
+     * Writes an empty JSON object.
+     *
+     * @return This writer.
+     * @throws IOException if there was a problem writing the output
+     */
+    public JsonWriter emptyObject() throws IOException {
+        formatter(State.OBJECT_START);
+        this.out.write('{');
+        formatter(State.OBJECT_END);
+        this.out.write('}');
+        writeLastNewline();
+        return this;
+    }
+
+    /**
      * Writes the start of a JSON array.
      *
      * @return This writer.
@@ -329,6 +344,21 @@ public class JsonWriter {
             throw new IllegalStateException("Expected to end array but was an object");
         }
 
+        formatter(State.ARRAY_END);
+        this.out.write(']');
+        writeLastNewline();
+        return this;
+    }
+
+    /**
+     * Writes an empty JSON array.
+     *
+     * @return This writer.
+     * @throws IOException if there was a problem writing the output
+     */
+    public JsonWriter emptyArray() throws IOException {
+        formatter(State.ARRAY_START);
+        this.out.write('[');
         formatter(State.ARRAY_END);
         this.out.write(']');
         writeLastNewline();
