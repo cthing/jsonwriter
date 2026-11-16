@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [2.2.0] - 2026-11-15
+
+### Added
+
+- Added convenience methods to write empty arrays and objects.
+
 ## [2.1.0] - 2025-12-26
 
 ### Added
@@ -28,7 +34,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - First release
 
-[unreleased]: https://github.com/cthing/jsonwriter/compare/2.1.0...HEAD
+[unreleased]: https://github.com/cthing/jsonwriter/compare/2.2.0...HEAD
+[2.2.0]: https://github.com/cthing/jsonwriter/releases/tag/2.2.0
 [2.1.0]: https://github.com/cthing/jsonwriter/releases/tag/2.1.0
 [2.0.0]: https://github.com/cthing/jsonwriter/releases/tag/2.0.0
 [1.0.0]: https://github.com/cthing/jsonwriter/releases/tag/1.0.0

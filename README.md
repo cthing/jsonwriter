@@ -13,12 +13,12 @@ The library is available from [Maven Central](https://repo.maven.apache.org/mave
 <dependency>
   <groupId>org.cthing</groupId>
   <artifactId>jsonwriter</artifactId>
-  <version>2.1.0</version>
+  <version>2.2.0</version>
 </dependency>
 ```
 or the following Gradle dependency:
 ```kotlin
-implementation("org.cthing:jsonwriter:2.1.0")
+implementation("org.cthing:jsonwriter:2.2.0")
 ```
 
 ### Getting Started
